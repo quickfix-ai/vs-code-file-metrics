@@ -1,0 +1,175 @@
+{
+  "name": "file-metrics",
+  "displayName": "File Metrics",
+  "description": "Free VS Code extension to view and track the largest files in your workspace by lines of code or file size. Built by the makers of Quickfix AI.",
+  "version": "0.0.1",
+  "publisher": "QuickfixAI",
+  "icon": "logo-icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "largestFiles",
+          "name": "File Metrics"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "largestFiles.refresh",
+        "title": "Refresh File Metrics",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "largestFiles.toggleMetric",
+        "title": "Toggle File Metrics Display",
+        "icon": "$(arrow-swap)"
+      },
+      {
+        "command": "largestFiles.hideFile",
+        "title": "Hide File",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "largestFiles.unhideFile",
+        "title": "Unhide File",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "largestFiles.openSettings",
+        "title": "Open File Metrics Settings",
+        "icon": "$(settings-gear)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "largestFiles.refresh",
+          "when": "view == largestFiles",
+          "group": "navigation"
+        },
+        {
+          "command": "largestFiles.toggleMetric",
+          "when": "view == largestFiles",
+          "group": "navigation"
+        },
+        {
+          "command": "largestFiles.openSettings",
+          "when": "view == largestFiles",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "largestFiles.hideFile",
+          "when": "view == largestFiles && viewItem == visibleFile",
+          "group": "inline"
+        },
+        {
+          "command": "largestFiles.unhideFile",
+          "when": "view == largestFiles && viewItem == hiddenFile",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "File Metrics",
+      "properties": {
+        "largestFiles.maxFiles": {
+          "type": "number",
+          "default": 20,
+          "description": "Maximum number of files to display in the File Metrics view",
+          "markdownDescription": "Maximum number of files to display in the File Metrics view\n\n**Note:** Only files that meet at least one threshold (warning or danger) will be shown\n\n**Recommended:** 20-50 files"
+        },
+        "largestFiles.excludedFolders": {
+          "type": "array",
+          "default": [
+            "node_modules",
+            ".git",
+            "dist",
+            "build",
+            "out",
+            ".next",
+            "coverage",
+            ".vscode"
+          ],
+          "description": "Folders to exclude from the scan (build outputs, dependencies, etc.)",
+          "markdownDescription": "Folders to exclude from the scan\n\n**Recommended:** Exclude build folders, dependencies, and generated code"
+        },
+        "largestFiles.fileExtensions": {
+          "type": "array",
+          "default": [
+            ".ts",
+            ".tsx",
+            ".js",
+            ".jsx",
+            ".py",
+            ".java",
+            ".cpp",
+            ".c",
+            ".h",
+            ".cs",
+            ".rb",
+            ".go",
+            ".php",
+            ".swift",
+            ".kt",
+            ".rs"
+          ],
+          "description": "File extensions to include in the scan",
+          "markdownDescription": "File extensions to include in the scan\n\n**Recommended:** Include only source code files, exclude config/data files"
+        },
+        "largestFiles.colorThresholds.warningLoc": {
+          "type": "number",
+          "default": 500,
+          "description": "Lines of Code: Warning threshold (yellow indicator)",
+          "markdownDescription": "**Lines of Code - Warning Threshold** 🟡\n\nFiles with this many lines or more will show a yellow warning indicator\n\n**Recommended:** 300-500 lines (files above this may benefit from refactoring)"
+        },
+        "largestFiles.colorThresholds.warningSize": {
+          "type": "number",
+          "default": 50,
+          "description": "File Size: Warning threshold in KB (yellow indicator)",
+          "markdownDescription": "**File Size - Warning Threshold** 🟡\n\nFiles this size (KB) or larger will show a yellow warning indicator\n\n**Recommended:** 50-100 KB"
+        },
+        "largestFiles.colorThresholds.dangerLoc": {
+          "type": "number",
+          "default": 1000,
+          "description": "Lines of Code: Danger threshold (red indicator)",
+          "markdownDescription": "**Lines of Code - Danger Threshold** 🔴\n\nFiles with this many lines or more will show a red danger indicator\n\n**Recommended:** 500-1000 lines (files above this should likely be split into smaller modules)"
+        },
+        "largestFiles.colorThresholds.dangerSize": {
+          "type": "number",
+          "default": 100,
+          "description": "File Size: Danger threshold in KB (red indicator)",
+          "markdownDescription": "**File Size - Danger Threshold** 🔴\n\nFiles this size (KB) or larger will show a red danger indicator\n\n**Recommended:** 100-200 KB"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  }
+}
